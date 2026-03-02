@@ -1,0 +1,50 @@
+@startuml
+left to right direction
+
+skinparam usecase {
+    BackgroundColor PaleGreen
+    BorderColor Black
+}
+
+actor User as U
+actor Admin as A
+
+rectangle "Hotel Booking System" {
+    usecase "Register" as R
+    usecase "Login" as L
+    usecase "Logout" as O
+    usecase "View Hotels" as VH
+    usecase "View Hotel Details" as VHD
+    usecase "Create Hotel" as CH
+    usecase "Update Hotel" as UH
+    usecase "Delete Hotel" as DH
+    usecase "Make Booking" as MB
+    usecase "View My Bookings" as VMB
+    usecase "View All Bookings" as VAB
+    usecase "Update Booking" as UB
+    usecase "Cancel Booking" as CB
+}
+
+U --> R
+U --> L
+U --> O
+U --> VH
+U --> VHD
+U --> MB
+U --> VMB
+U --> UB
+U --> CB
+
+A --> L
+A --> O
+A --> VH
+A --> VHD
+A --> CH
+A --> UH
+A --> DH
+A --> VAB
+A --> UB
+A --> CB
+
+
+@enduml

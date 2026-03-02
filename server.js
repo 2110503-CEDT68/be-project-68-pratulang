@@ -1,8 +1,19 @@
+const { setServers } = require("node:dns/promises");
+setServers(["1.1.1.1", "8.8.8.8"]);
+
 const express = require('express');
 const dotenv = require('dotenv');
+const connectDB = require('./config/db');
+const cookieParser = require('cookie-parser');
 
 //load env
 dotenv.config({ path: './config/config.env' })
+
+//connect db
+connectDB().catch(err => {
+    console.error('Failed to connect to database:', err);
+    process.exit(1);
+});
 
 const app = express();
 
@@ -16,6 +27,7 @@ app.set('query parser', 'extended');
 
 //Body parser
 app.use(express.json());
+app.use(cookieParser());
 
 //Mount routers
 app.use('/api/v1/hotels', hotels);

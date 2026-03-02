@@ -9,12 +9,16 @@ const router = express.Router();
 //Re-route into other resource routers
 router.use('/:hotelId/bookings/', bookingRouter);
 
+const {protect, authorize} = require('../middleware/auth');
+
 router.route('/')
     .get(getHotels)
-    .post(createHotel);
+    .post(protect, authorize('admin'), createHotel);
+
+//By id
 router.route('/:id')
     .get(getHotel)
-    .put(updateHotel)
-    .delete(deleteHotel);
+    .put(protect, authorize('admin'), updateHotel)
+    .delete(protect, authorize('admin'), deleteHotel);
 
 module.exports = router;

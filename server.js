@@ -6,11 +6,21 @@ dotenv.config({ path: './config/config.env' })
 
 const app = express();
 
+//Route files
+const hotels = require('./routes/hotels')
+const auth = require('./routes/auth');
+const bookings = require('./routes/bookings');
+
 //Query Parser
 app.set('query parser', 'extended');
 
 //Body parser
 app.use(express.json());
+
+//Mount routers
+app.use('/api/v1/hotels', hotels);
+app.use('/api/v1/auth', auth);
+app.use('/api/v1/bookings', bookings);
 
 const PORT = process.env.PORT || 5000;
 

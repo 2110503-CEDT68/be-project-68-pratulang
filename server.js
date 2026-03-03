@@ -11,8 +11,8 @@ dotenv.config({ path: './config/config.env' })
 
 //connect db
 connectDB().catch(err => {
-    console.error('Failed to connect to database:', err);
-    process.exit(1);
+  console.error('Failed to connect to database:', err);
+  process.exit(1);
 });
 
 const app = express();

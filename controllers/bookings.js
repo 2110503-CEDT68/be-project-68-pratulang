@@ -151,8 +151,6 @@ exports.addBooking = async (req, res, next) => {
       });
     }
 
-    //if the night nore than 
-
     const hotel = await Hotel.findById(req.params.hotelId);
 
     if (!hotel) {

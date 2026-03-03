@@ -8,31 +8,26 @@ exports.getHotels = async (req, res, next) => {
   try {
     let query;
 
-    // FIX: copy req.query to strip out non-filter params
     const reqQuery={...req.query};
-
-    // FIX: fields to exclude from filtering
     const removeFields=['select','sort','page','limit'];
 
-    // FIX: remove reserved fields from query params
     removeFields.forEach(param=>delete reqQuery[param]);
 
-    // FIX: convert filter operators to MongoDB format ($gt, $gte, etc)
+    if(reqQuery.name){
+      reqQuery.name = { $regex: reqQuery.name, $options: 'i' };
+    }
+
     let queryStr=JSON.stringify(reqQuery);
     queryStr=queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g,
     match=>`$${match}`);
 
-    // FIX: build base query with filters
     query=Hotel.find(JSON.parse(queryStr)).populate('bookings');
 
-    // FIX: select specific fields if requested
     if(req.query.select){
       const fields=req.query.select.split(',').join(' ');
       query=query.select(fields);
     }
-    // FIX: sort by requested field or default to -createdAt
     if(req.query.sort){
-      // FIX: parse sort fields from request (was using select by mistake)
       const fields=req.query.sort.split(',').join(' ');
       query=query.sort(fields);
     }
@@ -40,21 +35,16 @@ exports.getHotels = async (req, res, next) => {
       query=query.sort('-createdAt');
     }
 
-    // FIX: get pagination parameters
     const page=parseInt(req.query.page,10)||1;
     const limit=parseInt(req.query.limit,10)||25;
     const startIndex=(page-1)*limit;
     const endIndex=page*limit;
-    // FIX: count total documents matching filters (not all documents)
     const total=await Hotel.countDocuments(JSON.parse(queryStr));
 
-    // FIX: apply pagination to query
     query=query.skip(startIndex).limit(limit);
 
-    // FIX: execute query
     const hotels = await query;
 
-    // FIX: build pagination object
     const pagination={};
 
     if(endIndex<total){
@@ -65,7 +55,6 @@ exports.getHotels = async (req, res, next) => {
       pagination.prev={page:page-1,limit}
     }
 
-    // FIX: include total in response
     res.status(200).json({
       success: true,
       count: hotels.length,

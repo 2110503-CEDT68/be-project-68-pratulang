@@ -19,6 +19,13 @@ exports.getBookings=async (req,res,next)=>{
     const removeFields=['select','sort','page','limit'];
     removeFields.forEach(param=>delete reqQuery[param]);
 
+    if(baseFilter.hotel){
+      delete reqQuery.hotel; 
+    }
+    if(req.user.role!='admin'){
+      delete reqQuery.user;
+    }
+
     let queryStr=JSON.stringify({...baseFilter,...reqQuery});
     queryStr=queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g,
     match=>`$${match}`);

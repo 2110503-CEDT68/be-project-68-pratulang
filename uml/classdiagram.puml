@@ -44,6 +44,7 @@ class "Booking" <<Resource>> {
 
 ' Nested create booking (from your controller addBooking)
 class "HotelBookings" <<Resource>> {
+  + <<GET>> getBookings(hotelId) : Booking[*]
   + <<POST>> addBooking(hotelId) : Booking
 }
 
@@ -97,8 +98,8 @@ HotelBookingService ..> Bookings : /api/v1/bookings\n<<Path>>
 Bookings ..> Booking : /{id}\n<<Path>>
 
 ' Nested booking create endpoint in your code:
-HotelBookingService ..> HotelBookings : /api/v1/hotels\n<<Path>>
-HotelBookings ..> Booking : /{hotelId}/bookings\n<<Path>>
+HotelBookingService ..> HotelBookings : /api/v1/hotels/{hotelId}/bookings\n<<Path>>
+HotelBookings ..> Booking : /{id}\n<<Path>>
 
 HotelBookingService ..> Auth : /api/v1/auth\n<<Path>>
 

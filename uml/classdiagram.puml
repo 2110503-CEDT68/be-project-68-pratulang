@@ -31,6 +31,12 @@ class "Hotel" <<Resource>> {
   + <<DELETE>> deleteHotel(id) : void
 }
 
+' Nested create booking (from your controller addBooking)
+class "HotelBookings" <<Resource>> {
+  + <<GET>> getBookings(hotelId) : Booking[*]
+  + <<POST>> addBooking(hotelId) : Booking
+}
+
 ' RESOURCES (Bookings)
 class "Bookings" <<Resource>> {
   + <<GET>> getBookings() : Booking[*]
@@ -40,12 +46,6 @@ class "Booking" <<Resource>> {
   + <<GET>> getBooking(id) : Booking
   + <<PUT>> updateBooking(id) : Booking
   + <<DELETE>> deleteBooking(id) : void
-}
-
-' Nested create booking (from your controller addBooking)
-class "HotelBookings" <<Resource>> {
-  + <<GET>> getBookings(hotelId) : Booking[*]
-  + <<POST>> addBooking(hotelId) : Booking
 }
 
 

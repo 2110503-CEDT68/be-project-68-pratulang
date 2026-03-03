@@ -18,6 +18,7 @@
     "mongoose": "^9.2.3"
   },
   "devDependencies": {
+    "newman": "^6.2.2",
     "nodemon": "^3.1.14"
   },
   "repository": {

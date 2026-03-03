@@ -1,5 +1,6 @@
 @startuml
-title Booking Get All (GET)\nGet Bookings (User / Admin)
+title Sequence Diagram: Bookings (Get All)
+caption Get All Bookings (GET /bookings) - user own / admin any
 
 actor Client
 

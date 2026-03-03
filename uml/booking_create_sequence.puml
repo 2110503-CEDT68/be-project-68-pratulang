@@ -1,5 +1,6 @@
 @startuml
-title Booking Create (POST)\nCreate Booking
+title Sequence Diagram: Bookings (Create)
+caption Create Booking (POST /hotels/{hotelId}/bookings)
 
 actor Client
 

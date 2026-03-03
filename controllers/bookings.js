@@ -6,37 +6,64 @@ const Hotel = require('../models/Hotel');
 //@access Private
 exports.getBookings=async (req,res,next)=>{
     let query;
-    //General users can see only their bookings
-    //.populate({}) = join
+
+    const baseFilter={};
     if(req.user.role!='admin'){
-        query=Booking.find({user:req.user.id}).populate({
-            path:'hotel',
-            select:'name address tel'
-        });
+        baseFilter.user=req.user.id;
     }
-    //if you are an admin you can see all
+    else if(req.params.hotelId){
+        baseFilter.hotel=req.params.hotelId;
+    }
+
+    const reqQuery={...req.query};
+    const removeFields=['select','sort','page','limit'];
+    removeFields.forEach(param=>delete reqQuery[param]);
+
+    let queryStr=JSON.stringify({...baseFilter,...reqQuery});
+    queryStr=queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g,
+    match=>`$${match}`);
+
+    query=Booking.find(JSON.parse(queryStr)).populate({
+        path:'hotel',
+        select:'name address tel'
+    });
+
+    if(req.query.select){
+        const fields=req.query.select.split(',').join(' ');
+        query=query.select(fields);
+    }
+
+    if(req.query.sort){
+        const fields=req.query.sort.split(',').join(' ');
+        query=query.sort(fields);
+    }
     else{
-        if(req.params.hotelId){
-            console.log(req.params.hotelId);
-            query = Booking.find({hotel:req.params.hotelId}).populate({
-                path:'hotel',
-                select:'name address tel'
-            });
-        }
-        else{
-            query = Booking.find().populate({
-                path:'hotel',
-                select:'name address tel'
-            });
-        }
+        query=query.sort('-createdAt');
     }
+
+    const page=parseInt(req.query.page,10)||1;
+    const limit=parseInt(req.query.limit,10)||25;
+    const startIndex=(page-1)*limit;
+    const endIndex=page*limit;
+    const total=await Booking.countDocuments(JSON.parse(queryStr));
+
+    query=query.skip(startIndex).limit(limit);
 
     try{
         const bookings = await query;
+        const pagination={};
+        if(endIndex<total){
+            pagination.next={page:page+1,limit};
+        }
+        if(startIndex>0){
+            pagination.prev={page:page-1,limit};
+        }
 
         res.status(200).json({
             success:true,
             count:bookings.length,
+            total,
+            pagination,
             data:bookings
         });
     }

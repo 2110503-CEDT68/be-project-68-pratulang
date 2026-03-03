@@ -127,7 +127,7 @@ exports.addBooking = async (req, res, next) => {
 
     //requested nights should not exceed 3 by itself
     const requestedNights = req.body.numberOfNights || 0;
-    if (requestedNights > 3 && req.user.role !== 'admin') {
+    if (requestedNights > 3) {
       return res.status(400).json({
         success: false,
         message: 'A single booking cannot exceed 3 nights.'
